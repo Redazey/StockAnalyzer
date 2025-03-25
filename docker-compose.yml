@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+    mongo-express:
+        image: mongo-express
+        restart: always
+        ports:
+            - 8081:8081
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: backend
+            ME_CONFIG_MONGODB_ADMINPASSWORD: backend1!
+            ME_CONFIG_MONGODB_URL: mongodb://backend:backend1!@mongo:27018/
+            ME_CONFIG_BASICAUTH: false
+
+    tgssnRedis:
+        image: redis
+        container_name: stockAnalyzer
+        environment:
+            - REDIS_PASSWORD=backend!
+        ports:
+            - "6380:6380"
+
+    bot:
+        container_name: stockAnalyzer
+        build:
+            target: dev
+            network: host
+        volumes:
+            - .:/app
