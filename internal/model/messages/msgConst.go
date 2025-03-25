@@ -6,8 +6,7 @@ import (
 
 // Команды стартовых действий.
 var BtnStart = types.TgKbRowButtons{
-	types.TgKeyboardButton{Text: "Info"},
-	types.TgKeyboardButton{Text: "Profile"},
+	types.TgKeyboardButton{Text: "Companies"},
 }
 
 const (

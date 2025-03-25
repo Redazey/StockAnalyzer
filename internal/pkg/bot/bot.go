@@ -8,7 +8,7 @@ import (
 	"stockanalyzer/internal/model/messages"
 	"stockanalyzer/pkg/cache"
 	"stockanalyzer/pkg/logger"
-	db "stockanalyzer/pkg/mongodb"
+	db "stockanalyzer/pkg/mongo"
 )
 
 type App struct {
