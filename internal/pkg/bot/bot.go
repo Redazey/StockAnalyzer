@@ -9,6 +9,7 @@ import (
 	"stockanalyzer/pkg/cache"
 	"stockanalyzer/pkg/logger"
 	db "stockanalyzer/pkg/mongo"
+	"time"
 )
 
 type App struct {
@@ -20,7 +21,7 @@ type App struct {
 func Init() (*App, error) {
 	a := &App{}
 
-	ctx := context.Background()
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 
 	cfg, err := config.NewEnv()
 	if err != nil {
@@ -29,12 +30,12 @@ func Init() (*App, error) {
 
 	logger.Init(cfg.LoggerLevel, "")
 
-	err = db.Init(cfg.DB.DBAddr, cfg.DB.DBPort)
+	err = db.Init(ctx, cfg.DB.DBAddr, cfg.DB.DBPort, cfg.DB.DBName)
 	if err != nil {
 		return nil, err
 	}
 
-	err = cache.Init(cfg.Redis.RedisAddr+":"+cfg.Redis.RedisPort, cfg.Redis.RedisPassword, 0, cfg.Redis.EXTime)
+	err = cache.Init(ctx, cfg.Redis.RedisAddr+":"+cfg.Redis.RedisPort, cfg.Redis.RedisPassword, 0, cfg.Redis.EXTime)
 	if err != nil {
 		return nil, err
 	}

@@ -5,12 +5,13 @@ import (
 	types "stockanalyzer/internal/model/bottypes"
 	"stockanalyzer/pkg/cache"
 	"strconv"
+	"strings"
 
 	"github.com/opentracing/opentracing-go"
 )
 
 // callbacks
-func CallbacksCommands(s *Model, msg types.Message, companies []string) (bool, error) {
+func CallbacksCommands(s *Model, msg types.Message, companies []string, compInfo []types.CompanyInfo) (bool, error) {
 	cacheInlinekbMsg, err := cache.ReadCache(fmt.Sprintf("%v_inlinekbMsg", msg.UserID))
 	if err != nil {
 		return true, err
@@ -28,7 +29,7 @@ func CallbacksCommands(s *Model, msg types.Message, companies []string) (bool, e
 
 		// Дерево callbacks начинающихся с Categories
 		switch msg.Text {
-		case "backToCtg":
+		case "backToCompanies":
 			var btns []types.TgRowButtons
 			//var err error
 
@@ -53,6 +54,13 @@ func CallbacksCommands(s *Model, msg types.Message, companies []string) (bool, e
 				msg.UserID,
 				btns,
 			)
+		}
+
+		if strings.Contains(strings.Join(companies, " "), msg.Text) {
+			compInfo := GetCompanyInfoFromName(msg.Text, compInfo)
+			if compInfo == nil {
+
+			}
 		}
 	}
 

@@ -36,13 +36,6 @@ func CheckBotCommands(s *Model, msg types.Message, companies []string) (bool, er
 		}
 
 		return true, nil
-	case "/help":
-		if err := cache.SaveCache(fmt.Sprintf("%v_inlinekbMsg", msg.UserID), 0); err != nil {
-			return true, err
-		}
-
-		_, err := s.tgClient.SendMessage("mock", msg.UserID)
-		return true, err
 	}
 
 	// Команда не распознана.

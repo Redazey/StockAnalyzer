@@ -9,19 +9,20 @@ import (
 )
 
 var (
-	Ctx         = context.Background()
+	Ctx         context.Context
 	Rdb         *redis.Client
 	CacheEXTime time.Duration
 )
 
-func Init(Addr string, Password string, DB int, CacheEx time.Duration) error {
+func Init(ctx context.Context, Addr string, Password string, DB int, CacheEx time.Duration) error {
+	Ctx = ctx
 	Rdb = redis.NewClient(&redis.Options{
 		Addr:     Addr,
 		Password: Password,
 		DB:       DB,
 	})
 
-	err := Rdb.Ping(Ctx).Err()
+	err := Rdb.Ping(ctx).Err()
 	if err != nil {
 		return err
 	}

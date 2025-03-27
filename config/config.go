@@ -19,6 +19,7 @@ type Enviroment struct {
 type DB struct {
 	DBAddr string `env:"MONGO_ADDR,required"`
 	DBPort string `env:"MONGO_PORT,required"`
+	DBName string `env:"MONGO_DATABASE, required"`
 }
 
 type Redis struct {

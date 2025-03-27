@@ -56,7 +56,7 @@ func (s *Model) SetCtx(ctx context.Context) {
 // IncomingMessage Обработка входящего сообщения.
 func (s *Model) IncomingMessage(msg types.Message) error {
 	var companies []string
-	cCompanies, err := cache.ReadCache("ctgShorts")
+	cCompanies, err := cache.ReadCache("companies")
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func (s *Model) IncomingMessage(msg types.Message) error {
 
 	var compInfo []types.CompanyInfo
 	var cCompInfo []types.CompanyInfo
-	err = cache.ReadMapCache("compInfo", &compInfo)
+	err = cache.ReadMapCache("companies_info", &compInfo)
 	if err != nil {
 		return err
 	}
@@ -87,7 +87,7 @@ func (s *Model) IncomingMessage(msg types.Message) error {
 			return err
 		}
 
-		if err := cache.SaveMapCache("compInfo", cCompInfo); err != nil {
+		if err := cache.SaveMapCache("companies_info", cCompInfo); err != nil {
 			return err
 		}
 	} else {
@@ -103,7 +103,7 @@ func (s *Model) IncomingMessage(msg types.Message) error {
 		return err
 	}
 
-	if isNeedReturn, err := CallbacksCommands(s, msg, companies); err != nil || isNeedReturn {
+	if isNeedReturn, err := CallbacksCommands(s, msg, companies, compInfo); err != nil || isNeedReturn {
 		if err != nil {
 			logger.Error("Error while CallbacksCommands: ", zap.Error(err))
 		}
@@ -116,20 +116,20 @@ func (s *Model) IncomingMessage(msg types.Message) error {
 	return err
 }
 
-func GetCtgInfoFromName(Name string, compInfo []types.CompanyInfo) types.CompanyInfo {
-	for _, ctg := range compInfo {
-		if ctg.Name == Name {
-			return ctg
+func GetCompanyInfoFromName(Name string, compInfo []types.CompanyInfo) *types.CompanyInfo {
+	for _, company := range compInfo {
+		if company.Name == Name {
+			return &company
 		}
 	}
 
-	return types.CompanyInfo{}
+	return nil
 }
 
-func GetCtgInfoFromID(ID int64, compInfo []types.CompanyInfo) types.CompanyInfo {
-	for _, ctg := range compInfo {
-		if ctg.ID == ID {
-			return ctg
+func GetCompanyInfoFromID(ID int64, compInfo []types.CompanyInfo) types.CompanyInfo {
+	for _, company := range compInfo {
+		if company.ID == ID {
+			return company
 		}
 	}
 

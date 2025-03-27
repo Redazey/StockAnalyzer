@@ -8,21 +8,22 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var Conn *mongo.Client
+var Conn *mongo.Database
 
-func Init(Address string, Port string) error {
-	ctx := context.Background()
+func Init(ctx context.Context, Address string, Port string, Database string) error {
 	connStr := fmt.Sprintf(`mongodb://%v@mongo:%v/`, Address, Port)
-	Conn, err := mongo.Connect(ctx, options.Client().ApplyURI(connStr))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connStr))
 	if err != nil {
 		return err
 	}
 
 	// Проверка подключения к базе данных
-	err = Conn.Ping(ctx, nil)
+	err = client.Ping(ctx, nil)
 	if err != nil {
 		return err
 	}
+
+	Conn = client.Database(Database)
 
 	return nil
 }
@@ -57,6 +58,6 @@ func PullData(table string, data map[string]map[string]interface{}) error {
 }
 */
 
-func GetDBConn() *mongo.Client {
+func GetDBConn() *mongo.Database {
 	return Conn
 }
